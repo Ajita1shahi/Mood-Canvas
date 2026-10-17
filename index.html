@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6fb">
+  <title>MoodCanvas — Your world in colors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-icon">✳</span> moodcanvas<span class="brand-dot">.</span></a>
+    <span class="top-note">your little corner of the world ♡</span>
+  </header>
+
+  <main class="app">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">A LITTLE SPACE FOR YOURSELF</span>
+        <h1>Your feelings,<br>in full <span>color.</span></h1>
+        <p>Some days are poetry. Some days are just surviving.<br>There's room for all of them here.</p>
+        <a class="hero-link" href="#create">Capture today's feeling <span>↘</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb orb-one">☀</div>
+        <div class="orb orb-two">✿</div>
+        <div class="orb orb-three">☁</div>
+        <div class="orb orb-four">✦</div>
+        <div class="art-caption">feel it all.</div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Your mood statistics">
+      <article class="stat-card">
+        <span class="stat-icon pink">♡</span>
+        <span class="stat-label">Memories saved</span>
+        <strong id="total-count">0</strong>
+        <small>little moments, kept</small>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon yellow">✳</span>
+        <span class="stat-label">Your most common mood</span>
+        <strong id="top-mood">—</strong>
+        <small id="top-mood-note">your current vibe</small>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon purple">☾</span>
+        <span class="stat-label">This month</span>
+        <strong id="month-count">0</strong>
+        <small>entries this month</small>
+      </article>
+    </section>
+
+    <section class="create-panel panel" id="create">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">CHECK IN WITH YOURSELF</span>
+          <h2 id="form-title">How are you, really?</h2>
+        </div>
+        <span class="heading-decoration">✿</span>
+      </div>
+
+      <p class="field-label">Choose the feeling that fits</p>
+      <div class="mood-options" id="mood-options">
+        <button type="button" class="mood-option selected" data-mood="Happy">
+          <span>☀️</span><small>Happy</small>
+        </button>
+        <button type="button" class="mood-option" data-mood="Calm">
+          <span>🌿</span><small>Calm</small>
+        </button>
+        <button type="button" class="mood-option" data-mood="Excited">
+          <span>✨</span><small>Excited</small>
+        </button>
+        <button type="button" class="mood-option" data-mood="Sad">
+          <span>🌧️</span><small>Sad</small>
+        </button>
+        <button type="button" class="mood-option" data-mood="Tired">
+          <span>🌙</span><small>Tired</small>
+        </button>
+        <button type="button" class="mood-option" data-mood="Anxious">
+          <span>🫧</span><small>Anxious</small>
+        </button>
+      </div>
+
+      <label class="field-label" for="note">Give this moment a little meaning</label>
+      <textarea id="note" maxlength="300" placeholder="Today, I felt..."></textarea>
+      <div class="character-row"><span id="char-count">0 / 300</span></div>
+
+      <div class="form-bottom">
+        <label class="color-picker">
+          <input type="color" id="color" value="#f6d5e2">
+          <span class="color-preview" id="color-preview"></span>
+          <span><strong>Pick your color</strong><small>Paint this memory</small></span>
+        </label>
+        <div class="form-actions">
+          <button type="button" id="cancel-edit" class="button button-light" hidden>Cancel</button>
+          <button type="button" id="save" class="button button-dark">Save my moment <span>↗</span></button>
+        </div>
+      </div>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="calendar-section panel">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR DAYS, YOUR COLORS</span>
+          <h2>A calendar of feelings</h2>
+          <p class="section-description">Every little square holds a possibility.</p>
+        </div>
+        <span class="heading-decoration">☼</span>
+      </div>
+
+      <div class="calendar-toolbar">
+        <button type="button" class="calendar-arrow" id="prev-month" aria-label="Previous month">←</button>
+        <div class="calendar-month-wrap">
+          <h3 id="calendar-month"></h3>
+          <button type="button" id="today-button">Today</button>
+        </div>
+        <button type="button" class="calendar-arrow" id="next-month" aria-label="Next month">→</button>
+      </div>
+
+      <div class="calendar-grid" id="calendar">
+        <span class="weekday">SUN</span>
+        <span class="weekday">MON</span>
+        <span class="weekday">TUE</span>
+        <span class="weekday">WED</span>
+        <span class="weekday">THU</span>
+        <span class="weekday">FRI</span>
+        <span class="weekday">SAT</span>
+      </div>
+
+      <div class="calendar-legend">
+        <span><i class="legend-dot" style="background:#f6d5e2"></i>Happy</span>
+        <span><i class="legend-dot" style="background:#cfe8d5"></i>Calm</span>
+        <span><i class="legend-dot" style="background:#f8e4a6"></i>Excited</span>
+        <span><i class="legend-dot" style="background:#cfdafa"></i>Sad</span>
+        <span><i class="legend-dot" style="background:#ddd1f4"></i>Tired</span>
+        <span><i class="legend-dot" style="background:#f5d1bf"></i>Anxious</span>
+      </div>
+
+      <div class="day-detail" id="day-detail">
+        <div class="day-detail-icon" id="day-detail-icon">♡</div>
+        <div>
+          <strong id="day-detail-title">Choose a day</strong>
+          <p id="day-detail-text">Your saved moments will appear here when you select a date.</p>
+        </div>
+      </div>
+      <button type="button" id="clear-day-filter" class="text-button" hidden>Show all memories ↗</button>
+    </section>
+
+    <section class="insights-section panel">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">A LITTLE SELF-DISCOVERY</span>
+          <h2>Your mood landscape</h2>
+          <p class="section-description">No good or bad feelings. Just yours.</p>
+        </div>
+        <span class="heading-decoration">✧</span>
+      </div>
+      <div id="mood-breakdown" class="mood-breakdown"></div>
+    </section>
+
+    <section class="collection-section" id="collection">
+      <div class="collection-heading">
+        <div>
+          <span class="eyebrow">YOUR PERSONAL LITTLE UNIVERSE</span>
+          <h2>My collection <span class="count-pill" id="count">0</span></h2>
+          <p class="section-description" id="collection-subtitle">Every memory deserves a place.</p>
+        </div>
+        <button type="button" id="reset-filter" class="text-button" hidden>Clear filters ×</button>
+      </div>
+
+      <div class="collection-tools">
+        <label class="search-box">
+          <span>⌕</span>
+          <input type="search" id="search" placeholder="Find a little memory...">
+        </label>
+        <select id="filter" aria-label="Filter memories by mood">
+          <option value="All">All feelings</option>
+          <option value="Happy">☀️ Happy</option>
+          <option value="Calm">🌿 Calm</option>
+          <option value="Excited">✨ Excited</option>
+          <option value="Sad">🌧️ Sad</option>
+          <option value="Tired">🌙 Tired</option>
+          <option value="Anxious">🫧 Anxious</option>
+        </select>
+        <select id="sort" aria-label="Sort memories">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+
+      <div class="cards" id="cards"></div>
+      <div class="empty-state" id="empty" hidden>
+        <div class="empty-art">☁️</div>
+        <h3 id="empty-title">Your canvas is waiting</h3>
+        <p id="empty-text">Save your first little moment and watch your world of colors grow.</p>
+        <button type="button" id="empty-action" class="button button-dark">Create a memory ↗</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-flower">✳</span>
+    <p>Be gentle with yourself. You're a work in progress.</p>
+    <small>MOODCANVAS · MADE WITH A LITTLE LOVE ♡</small>
+  </footer>
+</body>
+</html>
