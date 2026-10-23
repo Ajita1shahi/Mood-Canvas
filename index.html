@@ -165,6 +165,59 @@
       <div id="mood-breakdown" class="mood-breakdown"></div>
     </section>
 
+    <!-- NEW: Weekly Mood Trends and Insights -->
+    <section class="weekly-insights panel" id="weekly-insights">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR WEEK IN COLORS</span>
+          <h2>Mood trends &amp; weekly insights</h2>
+          <p class="section-description">
+            Little patterns can tell you something about your week.
+          </p>
+        </div>
+        <span class="heading-decoration">☁</span>
+      </div>
+
+      <div class="weekly-stats">
+        <article class="weekly-stat">
+          <span class="weekly-stat-icon">♡</span>
+          <span class="stat-label">Entries this week</span>
+          <strong id="weekly-total">0</strong>
+          <small>moments you recorded</small>
+        </article>
+
+        <article class="weekly-stat">
+          <span class="weekly-stat-icon">✿</span>
+          <span class="stat-label">Most frequent mood</span>
+          <strong id="weekly-top-mood">—</strong>
+          <small id="weekly-top-note">your week's feeling</small>
+        </article>
+      </div>
+
+      <div class="weekly-chart-panel">
+        <h3>Your last seven days</h3>
+        <p class="section-description">
+          Each bar shows how many moods you recorded that day.
+        </p>
+
+        <div
+          class="weekly-chart"
+          id="weekly-chart"
+          role="img"
+          aria-label="Mood entries recorded over the last seven days"
+        >
+          <p class="weekly-empty">
+            Your weekly chart will appear here when your insights load.
+          </p>
+        </div>
+      </div>
+
+      <div class="weekly-summary" id="weekly-summary" aria-live="polite">
+        Your weekly reflection will appear here as you record your moments.
+      </div>
+    </section>
+    <!-- END: Weekly Mood Trends and Insights -->
+
     <section class="collection-section" id="collection">
       <div class="collection-heading">
         <div>

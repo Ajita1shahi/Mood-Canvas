@@ -1,7 +1,9 @@
+
 "use strict";
 
-
+// ======================================
 // MOODCANVAS — MAIN APPLICATION
+// ======================================
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -21,23 +23,23 @@ let selectedMood = "Happy";
 let editingId = null;
 let selectedDate = null;
 let viewedMonth = new Date();
+
 viewedMonth.setDate(1);
 
-
+// ======================================
 // DATE HELPERS
-// Use local dates so calendar days match
-// the user's local calendar.
-
+// ======================================
 
 function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
+
   return `${year}-${month}-${day}`;
 }
 
 function parseEntryDate(entry) {
-  // New entries always have a local dateKey.
+  // Prefer the local date saved by the current app.
   if (entry.dateKey && /^\d{4}-\d{2}-\d{2}$/.test(entry.dateKey)) {
     const [year, month, day] = entry.dateKey.split("-").map(Number);
     const date = new Date(year, month - 1, day);
@@ -51,8 +53,7 @@ function parseEntryDate(entry) {
     }
   }
 
-  // Migrate entries saved by the earlier app version.
-  // Prefer the old displayed local date when it exists.
+  // Support entries saved by earlier app versions.
   if (entry.date) {
     const oldDate = new Date(entry.date);
 
@@ -61,7 +62,6 @@ function parseEntryDate(entry) {
     }
   }
 
-  // Last fallback for older entries.
   if (entry.dateISO) {
     const oldISO = new Date(entry.dateISO);
 
@@ -89,9 +89,9 @@ function getMonthKey(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-
+// ======================================
 // LOAD AND SAVE DATA
-
+// ======================================
 
 function loadEntries() {
   try {
@@ -132,18 +132,21 @@ function saveEntries() {
     return true;
   } catch (error) {
     console.error("Could not save MoodCanvas entries:", error);
+
     showMessage(
       "Your browser could not save the changes. Check available storage.",
       true
     );
+
     return false;
   }
 }
 
 entries = loadEntries();
 
+// ======================================
 // MOOD PICKER AND COLOR PICKER
-
+// ======================================
 
 $("#mood-options").addEventListener("click", event => {
   const button = event.target.closest("[data-mood]");
@@ -234,7 +237,6 @@ function saveEntry() {
       return;
     }
 
-    // Show today's new entry in the calendar.
     selectedDate = entry.dateKey;
     viewedMonth = parseEntryDate(entry);
     viewedMonth.setDate(1);
@@ -271,7 +273,12 @@ function startEditing(id) {
 
   updateColorPreview();
   showMessage("Make your changes and save when you're ready.");
-  $("#create").scrollIntoView({ behavior: "smooth", block: "start" });
+
+  $("#create").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
   $("#note").focus({ preventScroll: true });
 }
 
@@ -298,8 +305,9 @@ $("#cancel-edit").addEventListener("click", () => {
   showMessage("Editing cancelled.");
 });
 
+// ======================================
 // DELETE ENTRIES
-
+// ======================================
 
 $("#cards").addEventListener("click", event => {
   const button = event.target.closest("[data-action]");
@@ -340,8 +348,9 @@ $("#cards").addEventListener("click", event => {
   }
 });
 
+// ======================================
 // SEARCH, FILTER, AND SORT
-
+// ======================================
 
 $("#filter").addEventListener("change", renderCollection);
 $("#search").addEventListener("input", renderCollection);
@@ -372,7 +381,10 @@ function getVisibleEntries() {
 
   visible.sort((a, b) => {
     const difference = a.createdAt - b.createdAt;
-    return $("#sort").value === "oldest" ? difference : -difference;
+
+    return $("#sort").value === "oldest"
+      ? difference
+      : -difference;
   });
 
   return visible;
@@ -383,6 +395,7 @@ $("#reset-filter").addEventListener("click", () => {
   $("#search").value = "";
   $("#sort").value = "newest";
   selectedDate = null;
+
   renderAll();
 });
 
@@ -401,9 +414,9 @@ $("#empty-action").addEventListener("click", () => {
   $("#note").focus({ preventScroll: true });
 });
 
-
+// ======================================
 // COLLECTION RENDERING
-
+// ======================================
 
 function renderCollection() {
   const container = $("#cards");
@@ -491,8 +504,9 @@ function renderCollection() {
   });
 }
 
-
+// ======================================
 // CALENDAR
+// ======================================
 
 $("#prev-month").addEventListener("click", () => {
   viewedMonth = new Date(
@@ -500,6 +514,7 @@ $("#prev-month").addEventListener("click", () => {
     viewedMonth.getMonth() - 1,
     1
   );
+
   renderCalendar();
 });
 
@@ -509,12 +524,19 @@ $("#next-month").addEventListener("click", () => {
     viewedMonth.getMonth() + 1,
     1
   );
+
   renderCalendar();
 });
 
 $("#today-button").addEventListener("click", () => {
   const today = new Date();
-  viewedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  viewedMonth = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    1
+  );
+
   selectedDate = localDateKey(today);
   renderAll();
 });
@@ -562,7 +584,11 @@ function renderCalendar() {
     button.type = "button";
     button.className = "calendar-day";
     button.textContent = day;
-    button.setAttribute("aria-label", `${formatDate(date)}, ${dayEntries.length} memories`);
+
+    button.setAttribute(
+      "aria-label",
+      `${formatDate(date)}, ${dayEntries.length} memories`
+    );
 
     if (key === todayKey) button.classList.add("today");
     if (key === selectedDate) button.classList.add("selected-day");
@@ -570,7 +596,10 @@ function renderCalendar() {
     if (dayEntries.length) {
       button.classList.add("has-entry");
       button.style.backgroundColor = dayEntries[0].color;
-      button.title = `${dayEntries.length} saved ${dayEntries.length === 1 ? "memory" : "memories"}`;
+
+      button.title = `${dayEntries.length} saved ${
+        dayEntries.length === 1 ? "memory" : "memories"
+      }`;
 
       const emoji = document.createElement("span");
       emoji.className = "day-emoji";
@@ -587,6 +616,7 @@ function renderCalendar() {
 
     button.addEventListener("click", () => {
       selectedDate = key;
+
       showDayDetails(key, dayEntries);
       renderCalendar();
       renderCollection();
@@ -612,11 +642,14 @@ function renderCalendar() {
     const selectedEntries = entries.filter(
       entry => getEntryDateKey(entry) === selectedDate
     );
+
     showDayDetails(selectedDate, selectedEntries);
   } else {
     $("#day-detail-title").textContent = "Choose a day";
+
     $("#day-detail-text").textContent =
       "Your saved moments will appear here when you select a date.";
+
     $("#day-detail-icon").textContent = "♡";
     $("#clear-day-filter").hidden = true;
   }
@@ -627,6 +660,7 @@ function showDayDetails(key, dayEntries) {
   const date = new Date(year, month - 1, day);
 
   $("#day-detail-title").textContent = formatDate(date);
+
   $("#day-detail-icon").textContent = dayEntries.length
     ? moodInfo[dayEntries[0].mood].emoji
     : "♡";
@@ -634,16 +668,20 @@ function showDayDetails(key, dayEntries) {
   if (!dayEntries.length) {
     $("#day-detail-text").textContent =
       "No saved memories on this day. Maybe there's room for one today.";
+
     return;
   }
 
   $("#day-detail-text").textContent = dayEntries
-    .map(entry => `${moodInfo[entry.mood].emoji} ${entry.mood}: ${entry.note}`)
+    .map(entry =>
+      `${moodInfo[entry.mood].emoji} ${entry.mood}: ${entry.note}`
+    )
     .join("\n");
 }
 
+// ======================================
 // MOOD INSIGHTS
-
+// ======================================
 
 function renderInsights() {
   const now = new Date();
@@ -672,8 +710,11 @@ function renderInsights() {
     )[0];
 
     $("#top-mood").textContent = `${moodInfo[top].emoji} ${top}`;
+
     $("#top-mood-note").textContent =
-      `${counts[top]} ${counts[top] === 1 ? "memory" : "memories"} recorded`;
+      `${counts[top]} ${
+        counts[top] === 1 ? "memory" : "memories"
+      } recorded`;
   }
 
   const breakdown = $("#mood-breakdown");
@@ -681,6 +722,7 @@ function renderInsights() {
 
   Object.entries(moodInfo).forEach(([mood, info]) => {
     const count = entries.filter(entry => entry.mood === mood).length;
+
     const percentage = entries.length
       ? Math.round((count / entries.length) * 100)
       : 0;
@@ -713,9 +755,172 @@ function renderInsights() {
   });
 }
 
+// ======================================
+// WEEKLY MOOD TRENDS & INSIGHTS
+// ======================================
 
+function renderWeeklyInsights() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Include today and the previous six calendar days.
+  const lastSevenDays = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const day = new Date(today);
+    day.setDate(today.getDate() - i);
+
+    lastSevenDays.push({
+      date: day,
+      key: localDateKey(day),
+      label: day.toLocaleDateString("en", { weekday: "short" }),
+      count: 0,
+      moods: {}
+    });
+  }
+
+  // Count saved entries for each of the seven days.
+  entries.forEach(entry => {
+    const entryKey = getEntryDateKey(entry);
+    const dayData = lastSevenDays.find(day => day.key === entryKey);
+
+    if (dayData) {
+      dayData.count++;
+      dayData.moods[entry.mood] =
+        (dayData.moods[entry.mood] || 0) + 1;
+    }
+  });
+
+  const weeklyEntries = entries.filter(entry =>
+    lastSevenDays.some(day => day.key === getEntryDateKey(entry))
+  );
+
+  $("#weekly-total").textContent = weeklyEntries.length;
+
+  // Find the most frequent mood this week.
+  const moodCounts = {};
+
+  weeklyEntries.forEach(entry => {
+    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+  });
+
+  const moodNames = Object.keys(moodCounts).sort(
+    (a, b) => moodCounts[b] - moodCounts[a]
+  );
+
+  if (moodNames.length) {
+    const topMood = moodNames[0];
+
+    $("#weekly-top-mood").textContent =
+      `${moodInfo[topMood].emoji} ${topMood}`;
+
+    $("#weekly-top-note").textContent =
+      `${moodCounts[topMood]} ${
+        moodCounts[topMood] === 1 ? "entry" : "entries"
+      } this week`;
+  } else {
+    $("#weekly-top-mood").textContent = "—";
+    $("#weekly-top-note").textContent = "your week's feeling";
+  }
+
+  // Render the seven-day bar chart.
+  const chart = $("#weekly-chart");
+  chart.replaceChildren();
+
+  const maximum = Math.max(
+    1,
+    ...lastSevenDays.map(day => day.count)
+  );
+
+  lastSevenDays.forEach(day => {
+    const column = document.createElement("div");
+    column.className = "weekly-chart-column";
+
+    const count = document.createElement("span");
+    count.className = "weekly-bar-count";
+    count.textContent = day.count;
+
+    const track = document.createElement("div");
+    track.className = "weekly-bar-track";
+
+    const bar = document.createElement("div");
+    bar.className = "weekly-bar";
+
+    const height = day.count
+      ? Math.max(8, (day.count / maximum) * 100)
+      : 0;
+
+    bar.style.height = `${height}%`;
+
+    const dailyTopMood = Object.keys(day.moods).sort(
+      (a, b) => day.moods[b] - day.moods[a]
+    )[0];
+
+    bar.style.backgroundColor = dailyTopMood
+      ? moodInfo[dailyTopMood].color
+      : "#eee6f3";
+
+    bar.title = `${day.count} ${
+      day.count === 1 ? "entry" : "entries"
+    } on ${formatDate(day.date)}`;
+
+    track.append(bar);
+
+    const label = document.createElement("span");
+    label.className = "weekly-bar-label";
+    label.textContent = day.label;
+
+    const dateLabel = document.createElement("small");
+    dateLabel.className = "weekly-bar-date";
+    dateLabel.textContent = day.date.getDate();
+
+    column.append(count, track, label, dateLabel);
+    chart.append(column);
+  });
+
+  // Build a reflection from the actual weekly entries.
+  const summary = $("#weekly-summary");
+
+  if (!weeklyEntries.length) {
+    summary.textContent =
+      "Your week is a blank canvas so far. Record a little moment, and your weekly insights will grow with you.";
+
+    return;
+  }
+
+  const daysWithEntries = lastSevenDays.filter(
+    day => day.count > 0
+  ).length;
+
+  const busiestDay = [...lastSevenDays].sort(
+    (a, b) => b.count - a.count
+  )[0];
+
+  let reflection =
+    `You recorded ${weeklyEntries.length} ${
+      weeklyEntries.length === 1 ? "moment" : "moments"
+    } across ${daysWithEntries} ${
+      daysWithEntries === 1 ? "day" : "days"
+    } in the last seven days.`;
+
+  if (moodNames.length) {
+    reflection +=
+      ` Your most frequent mood was ${moodInfo[moodNames[0]].emoji} ${moodNames[0].toLowerCase()}.`;
+  }
+
+  if (busiestDay.count > 0) {
+    reflection +=
+      ` Your most active day was ${formatDate(busiestDay.date)} with ${busiestDay.count} ${
+        busiestDay.count === 1 ? "entry" : "entries"
+      }.`;
+  }
+
+  summary.textContent = reflection;
+}
+
+// ======================================
 // SHARED UI HELPERS
-
+// ======================================
 
 function showMessage(text, isError = false) {
   $("#message").textContent = text;
@@ -724,12 +929,14 @@ function showMessage(text, isError = false) {
 
 function renderAll() {
   renderInsights();
+  renderWeeklyInsights();
   renderCalendar();
   renderCollection();
 }
 
+// ======================================
 // START APPLICATION
-
+// ======================================
 
 updateColorPreview();
 renderAll();
